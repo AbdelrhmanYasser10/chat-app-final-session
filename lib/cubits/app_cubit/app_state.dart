@@ -37,3 +37,8 @@ final class GetUserDataError extends AppState{}
 final class GetContactsLoading extends AppState{}
 final class GetContactsSuccess extends AppState{}
 final class GetContactsError extends AppState{}
+
+final class SendMessageSuccess extends AppState{}
+final class SendMessageError extends AppState{}
+
+final class GetMessages extends AppState{}

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:chat_app_final/models/message_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -165,7 +166,30 @@ class AppCubit extends Cubit<AppState> {
     });
   }
 
-  void login() {}
+  void login({required String email,required String password}) {
+    emit(LoginLoading());
+    _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    ).then((value) {
+      //set user online;
+      //setUserOnline();
+      //get data
+      _database.
+      collection("users").
+      doc(value.user!.uid).
+      get().then((value){
+        userModel = UserModel.fromMap(value.data()!);
+        setUserOnline();
+        emit(LoginSuccessfully());
+      }).catchError((error){
+        emit(LoginError(message:error.toString()));
+      });
+    }).catchError((error){
+      emit(LoginError(message:error.toString()));
+    });
+
+  }
 
   void getUserData() {
     emit(GetUserDataLoading());
@@ -200,6 +224,57 @@ class AppCubit extends Cubit<AppState> {
         }
       }
       emit(GetContactsSuccess());
+    });
+  }
+
+  void sentMessage({required String recieverId , required String content}){
+    var myId = _auth.currentUser!.uid;
+
+    MessageModel message = MessageModel(
+      content: content,
+      recieverId: recieverId,
+      senderId: myId,
+      time: Timestamp.now(),
+    );
+    _database.
+    collection("users").
+    doc(myId).
+    collection("chats").
+    doc(recieverId).
+    collection("messages").
+    add(message.toMap()).then((value){
+      emit(SendMessageSuccess());
+    }).catchError((error){
+      emit(SendMessageError());
+    });
+    _database.
+    collection("users").
+    doc(recieverId).
+    collection("chats").
+    doc(myId).
+    collection("messages").
+    add(message.toMap()).then((value){
+      emit(SendMessageSuccess());
+    }).catchError((error){
+      emit(SendMessageError());
+    });
+  }
+
+  List<MessageModel> messages =[];
+  void getMessages(String recieverId){
+    _database.
+    collection('users').
+    doc(userModel!.id).
+    collection('chats').
+    doc(recieverId).
+    collection('messages').
+    orderBy('time').
+    snapshots().listen((event) {
+      messages = [];
+      event.docs.forEach((element) {
+      messages.add(MessageModel.formJson(element.data()));
+      });
+      emit(GetMessages());
     });
   }
 }

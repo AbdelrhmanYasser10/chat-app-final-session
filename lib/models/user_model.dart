@@ -1,9 +1,12 @@
+import 'message_model.dart';
+
 class UserModel{
   late String id;
   late String email;
   late String name;
   late String imageUrl;
   late bool online;
+  MessageModel? lastMessage;
 
   UserModel.fromMap(Map<String,dynamic> json){
     id = json["id"];
@@ -17,7 +20,7 @@ class UserModel{
     return {
       "id":id,
       "email":email,
-      "name":name,
+      "username":name,
       "imageUrl":imageUrl,
       "online":online,
     };

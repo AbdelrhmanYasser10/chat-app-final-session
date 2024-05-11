@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
 
-class MyTextFormField extends StatefulWidget {
+class MyFormField extends StatefulWidget {
+
   final TextEditingController controller;
-  final String hintText;
+  final String?Function(String?) validator;
   final Icon prefixIcon;
   final bool isPassword;
-  final String?Function(String?) validation;
-  const MyTextFormField({
+  final String text;
+  bool? isSecured;
+
+
+  MyFormField({
     super.key,
     required this.controller,
+    required this.text,
+    required this.validator,
     required this.prefixIcon,
-    required this.hintText,
-    required this.validation,
     this.isPassword = false,
+    this.isSecured = false,
   });
 
   @override
-  State<MyTextFormField> createState() => _MyTextFormFieldState();
+  State<MyFormField> createState() => _MyFormFieldState();
 }
 
-class _MyTextFormFieldState extends State<MyTextFormField> {
+class _MyFormFieldState extends State<MyFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      obscureText: widget.isSecured!,
       controller: widget.controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(
@@ -32,24 +38,20 @@ class _MyTextFormFieldState extends State<MyTextFormField> {
             color: Colors.black,
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: const BorderSide(
-            width: 1.0,
-            color: Colors.black,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
-          borderSide: const BorderSide(
-            width: 1.0,
-            color: Colors.black,
-          ),
-        ),
-        hintText: widget.hintText,
+        hintText: widget.text,
         prefixIcon: widget.prefixIcon,
+        suffixIcon: widget.isPassword ? IconButton(
+          onPressed: (){
+            setState(() {
+              widget.isSecured = !widget.isSecured!;
+            });
+          },
+          icon: Icon(
+            widget.isSecured! ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+          ),
+        ):null,
       ),
-      validator: widget.validation,
+      validator:widget.validator,
     );
   }
 }

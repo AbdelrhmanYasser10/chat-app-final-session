@@ -1,5 +1,6 @@
 import 'package:chat_app_final/cubits/app_cubit/app_cubit.dart';
 import 'package:chat_app_final/layout/main_layout.dart';
+import 'package:chat_app_final/screens/login_screen.dart';
 import 'package:chat_app_final/screens/register_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
 
           useMaterial3: false,
         ),
-        home: FirebaseAuth.instance.currentUser != null ? const MainLayout() : const RegisterScreen(),
+        home: FirebaseAuth.instance.currentUser != null ? const MainLayout() : const LoginScreen(),
       ),
     );
   }

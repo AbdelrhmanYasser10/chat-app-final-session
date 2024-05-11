@@ -1,3 +1,5 @@
+
+
 import 'package:chat_app_final/cubits/app_cubit/app_cubit.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +15,8 @@ class MainLayout extends StatefulWidget {
   State<MainLayout> createState() => _MainLayoutState();
 }
 
-class _MainLayoutState extends State<MainLayout> {
+class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
+
 
   List<Widget> screens = const [
     ContactsScreen(),
@@ -24,6 +27,31 @@ class _MainLayoutState extends State<MainLayout> {
   int currentIndex= 0;
 
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if(state == AppLifecycleState.paused || state == AppLifecycleState.detached || state == AppLifecycleState.inactive){
+      AppCubit.get(context).setUserOffline();
+    }
+    else{
+      AppCubit.get(context).setUserOnline();
+
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -121,46 +121,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          MyTextFormField(
+                          MyFormField(
                             controller: _emailController,
                             prefixIcon: const Icon(
                               Icons.email,
                             ),
-                            hintText: "Email",
-                            validation: (p0) {},
+                            text: "Email",
+                            validator: (p0) {},
                           ),
                           const SizedBox(
                             height: 20.0,
                           ),
-                          MyTextFormField(
+                          MyFormField(
                             controller: _usernameController,
                             prefixIcon: const Icon(
                               Icons.person,
                             ),
-                            hintText: "Username",
-                            validation: (p0) {},
+                            text: "Username",
+                            validator: (p0) {},
                           ),
                           const SizedBox(
                             height: 20.0,
                           ),
-                          MyTextFormField(
+                          MyFormField(
                             controller: _passwordController,
                             prefixIcon: const Icon(
                               Icons.lock,
                             ),
-                            hintText: "Password",
-                            validation: (p0) {},
+                            text: "Password",
+                            validator: (p0) {},
+                            isPassword: true,
+                            isSecured: true,
                           ),
                           const SizedBox(
                             height: 20.0,
                           ),
-                          MyTextFormField(
+                          MyFormField(
                             controller: _confPasswordController,
                             prefixIcon: const Icon(
                               Icons.lock,
                             ),
-                            hintText: "Confirm Password",
-                            validation: (p0) {},
+                            text: "Confirm Password",
+                            validator: (p0) {},
+                            isPassword: true,
+                            isSecured: true,
                           ),
                         ],
                       ),
