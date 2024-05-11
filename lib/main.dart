@@ -1,5 +1,7 @@
 import 'package:chat_app_final/cubits/app_cubit/app_cubit.dart';
+import 'package:chat_app_final/layout/main_layout.dart';
 import 'package:chat_app_final/screens/register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,13 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  if(FirebaseAuth.instance.currentUser != null) {
+    FirebaseAuth.instance.signOut();
+    print(FirebaseAuth.instance.currentUser!.uid);
+  }
+  else{
+
+  }
   runApp(const MyApp());
 }
 
@@ -21,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AppCubit(),
+      create: (context) => AppCubit()..getUserData(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Chat App',
@@ -29,7 +38,7 @@ class MyApp extends StatelessWidget {
 
           useMaterial3: false,
         ),
-        home: const RegisterScreen(),
+        home: FirebaseAuth.instance.currentUser != null ? const MainLayout() : const RegisterScreen(),
       ),
     );
   }

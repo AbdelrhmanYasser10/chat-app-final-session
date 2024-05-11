@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app_final/cubits/app_cubit/app_cubit.dart';
+import 'package:chat_app_final/layout/main_layout.dart';
 import 'package:chat_app_final/utils/my_text_form_field/my_text_form_field.dart';
 import 'package:chat_app_final/utils/text_style/text_style.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +19,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confPasswordController = TextEditingController();
@@ -38,8 +38,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, AppState>(
       listener: (context, state) {
-        if(state is GetImageSuccessfully){
+        if (state is GetImageSuccessfully) {
           AppCubit.get(context).cropImage();
+        }
+        if (state is RegisterSuccessfully) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const MainLayout(),
+            ),
+          );
+        }
+        if (state is RegisterError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       },
       builder: (context, state) {
@@ -57,29 +73,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           body: Center(
             child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 20.0,
-                  left: 20,
-                  right: 20.0
-              ),
+              padding: const EdgeInsets.only(top: 20.0, left: 20, right: 20.0),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Stack(
                       children: [
-                        cubit.finalImage == null ? const CircleAvatar(
-                          radius: 64.0,
-                          backgroundImage: NetworkImage(
-                              "https://www.refugee-action.org.uk/wp-content/uploads/2016/10/anonymous-user.png"
-                          ),
-                        ):CircleAvatar(
-                          radius: 64.0,
-                          backgroundImage: FileImage(
-                            File(
-                                cubit.finalImage!.path,
-                            ),
-                          ),
-                        ),
+                        cubit.finalImage == null
+                            ? const CircleAvatar(
+                                radius: 64.0,
+                                backgroundImage: NetworkImage(
+                                    "https://www.refugee-action.org.uk/wp-content/uploads/2016/10/anonymous-user.png"),
+                              )
+                            : CircleAvatar(
+                                radius: 64.0,
+                                backgroundImage: FileImage(
+                                  File(
+                                    cubit.finalImage!.path,
+                                  ),
+                                ),
+                              ),
                         Positioned(
                           bottom: 0,
                           right: 0,
@@ -90,10 +103,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onPressed: () {
                                 cubit.pickImage();
                               },
-                              icon:  Icon(
-                                cubit.finalImage == null ?
-                                Icons.add:
-                                Icons.edit,
+                              icon: Icon(
+                                cubit.finalImage == null
+                                    ? Icons.add
+                                    : Icons.edit,
                                 color: Colors.white,
                               ),
                             ),
@@ -110,52 +123,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         children: [
                           MyTextFormField(
                             controller: _emailController,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.email,
                             ),
                             hintText: "Email",
-                            validation: (p0) {
-
-                            },
+                            validation: (p0) {},
                           ),
                           const SizedBox(
                             height: 20.0,
                           ),
                           MyTextFormField(
                             controller: _usernameController,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.person,
                             ),
                             hintText: "Username",
-                            validation: (p0) {
-
-                            },
+                            validation: (p0) {},
                           ),
                           const SizedBox(
                             height: 20.0,
                           ),
                           MyTextFormField(
                             controller: _passwordController,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.lock,
                             ),
                             hintText: "Password",
-                            validation: (p0) {
-
-                            },
+                            validation: (p0) {},
                           ),
                           const SizedBox(
                             height: 20.0,
                           ),
                           MyTextFormField(
                             controller: _confPasswordController,
-                            prefixIcon: Icon(
+                            prefixIcon: const Icon(
                               Icons.lock,
                             ),
                             hintText: "Confirm Password",
-                            validation: (p0) {
-
-                            },
+                            validation: (p0) {},
                           ),
                         ],
                       ),
@@ -163,10 +168,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(
                       height: 20.0,
                     ),
-                    MyButton(
-                      text: "Register",
-                      onPressed: () {},
-                    ),
+                    state is RegisterLoading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.blue.shade900,
+                            ),
+                          )
+                        : MyButton(
+                            text: "Register",
+                            onPressed: () {
+                              cubit.register(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                                username: _usernameController.text,
+                              );
+                            },
+                          ),
                   ],
                 ),
               ),

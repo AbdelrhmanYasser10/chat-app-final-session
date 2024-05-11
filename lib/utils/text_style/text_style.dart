@@ -16,6 +16,16 @@ abstract class AppTextStyle{
      );
    }
 
+   static TextStyle nameTextStyle(){
+     return GoogleFonts.lora(
+         textStyle:const TextStyle(
+           fontSize: 20.0,
+           color: Colors.black,
+           fontWeight: FontWeight.bold,
+         )
+     );
+   }
+
    static TextStyle buttonTextStyle(){
      return GoogleFonts.lora(
          textStyle:const TextStyle(

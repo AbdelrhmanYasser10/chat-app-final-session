@@ -26,3 +26,14 @@ final class GetImageError extends AppState{}
 
 final class CroppedSuccessfully extends AppState{}
 final class CroppedError extends AppState{}
+final class SetUserOffline extends AppState{}
+final class SetUserOnline extends AppState{}
+
+
+final class GetUserDataLoading extends AppState{}
+final class GetUserDataSuccess extends AppState{}
+final class GetUserDataError extends AppState{}
+
+final class GetContactsLoading extends AppState{}
+final class GetContactsSuccess extends AppState{}
+final class GetContactsError extends AppState{}
